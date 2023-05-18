@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tic Tac Toe</title>
+    <style>
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 10px;
+            width: 300px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            font-size: 40px;
+            text-align: center;
+            line-height: 100px;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tic Tac Toe</h1>
+    <div class="board">
+        {% for i in range(9) %}
+            <div class="cell" id="cell{{ i }}" onclick="makeMove({{ i }})">{{ board[i] }}</div>
+        {% endfor %}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function makeMove(position) {
+            $.post('/play', {'position': position}, function(response) {
+                if (response.status === 'ok') {
+                    $('#cell' + position).text('X');
+                    if (response.status === 'win') {
+                        alert('You win!');
+                    } else if (response.status === 'tie') {
+                        alert('It\'s a tie!');
+                    } else {
+                        $('#cell' + response.position).text('O');
+                        if (response.status === 'win') {
+                            alert('Computer wins!');
+                        } else if (response.status === 'tie') {
+                            alert('It\'s a tie!');
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
